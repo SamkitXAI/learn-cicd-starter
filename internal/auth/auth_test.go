@@ -1,6 +1,6 @@
 package auth
 
-import(
+import (
 	"fmt"
 	"net/http"
 	"strings"
@@ -8,41 +8,41 @@ import(
 )
 
 func TestGetAPIKey(t *testing.T) {
-	tests := []struct{
-		key string
-		value string
-		expect string
+	tests := []struct {
+		key       string
+		value     string
+		expect    string
 		expectErr string
 	}{
 		{
 			expectErr: "no authorization header",
 		},
 		{
-			key: "Authorization",
+			key:       "Authorization",
 			expectErr: "no authorization header",
 		},
 		{
-			key: "Authorization",
-			value: "-",
+			key:       "Authorization",
+			value:     "-",
 			expectErr: "malformed authorization header",
 		},
 		{
-			key: "Authorization",
-			value: "Bearer xxxxxx",
+			key:       "Authorization",
+			value:     "Bearer xxxxxx",
 			expectErr: "malformed authorization header",
 		},
 		{
-			key: "Authorization",
-			value: "ApiKey xxxxxx",
-			expect: "xxxxxx",
+			key:       "Authorization",
+			value:     "ApiKey xxxxxx",
+			expect:    "xxxxxx",
 			expectErr: "not expecting an error",
 		},
 	}
 	for i, test := range tests {
 		t.Run(fmt.Sprintf("TestGetAPIKey Case #%v:", i), func(t *testing.T) {
 			header := http.Header{}
-			header.Add(	test.key, test.value)
-			
+			header.Add(test.key, test.value)
+
 			output, err := GetAPIKey(header)
 			if err != nil {
 				if strings.Contains(err.Error(), test.expectErr) {
